@@ -1,0 +1,23 @@
+[package]
+name = "gitwise-core"
+description = "Gitwise engine: runs git, keeps profiles apart, guards commits and pushes."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+reqwest.workspace = true
+globset.workspace = true
+keyring.workspace = true
+uuid.workspace = true
+dirs.workspace = true
+trash.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

@@ -1,0 +1,103 @@
+name: Release
+
+# Every merge to main ships: the version is VERSION (major.minor) plus the run number, the
+# installer is built and signed for the updater, and the release is published with latest.json,
+# which running copies of Gitwise check on startup.
+#
+# Secrets:  TAURI_SIGNING_PRIVATE_KEY, TAURI_SIGNING_PRIVATE_KEY_PASSWORD (may be empty)
+# Variables (optional): GITWISE_GITHUB_CLIENT_ID, the OAuth app used for "Sign in with browser"
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  prepare:
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      release_id: ${{ steps.release.outputs.id }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: version
+        run: echo "version=$(tr -d '[:space:]' < VERSION).${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+      - id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          notes=$(git log -1 --format=%B)
+          id=$(gh api "repos/${{ github.repository }}/releases" \
+            -f tag_name="v$VERSION" -f target_commitish="${{ github.sha }}" \
+            -f name="Gitwise $VERSION" -f body="$notes" -F draft=true --jq .id)
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            args: ""
+          # macOS: enable when the Mac build should ship (add Apple signing secrets for a
+          # notarised app; without them Gatekeeper asks users to allow it manually).
+          # - os: macos-latest
+          #   args: "--target universal-apple-darwin"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/desktop/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.os == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install UI dependencies
+        working-directory: apps/desktop
+        run: npm ci
+
+      - name: Stamp version
+        run: node scripts/set-version.mjs ${{ needs.prepare.outputs.version }}
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          GITWISE_GITHUB_CLIENT_ID: ${{ vars.GITWISE_GITHUB_CLIENT_ID }}
+        with:
+          projectPath: apps/desktop
+          releaseId: ${{ needs.prepare.outputs.release_id }}
+          includeUpdaterJson: true
+          updaterJsonPreferNsis: true
+          args: ${{ matrix.args }}
+
+  publish:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PATCH "repos/${{ github.repository }}/releases/${{ needs.prepare.outputs.release_id }}" -F draft=false -f make_latest=true

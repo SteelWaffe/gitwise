@@ -1,0 +1,51 @@
+name: CI
+
+# Every push and pull request: type-check and build the UI, test the engine against real git,
+# lint the Rust code. Releases are a separate workflow (release.yml).
+
+on:
+  push:
+    branches-ignore: [main]
+  pull_request:
+  workflow_call:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        # macOS is listed so the code keeps building there while the app is Windows-first.
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/desktop/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install UI dependencies
+        working-directory: apps/desktop
+        run: npm ci
+
+      - name: Build UI
+        working-directory: apps/desktop
+        run: npm run build
+
+      - name: Test engine
+        run: cargo test --workspace --locked
+
+      - name: Clippy
+        run: cargo clippy --workspace --locked --all-targets -- -D warnings
