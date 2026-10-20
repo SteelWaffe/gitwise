@@ -7,7 +7,7 @@ version = "0.1.0"
 edition = "2021"
 license = "UNLICENSED"
 authors = ["Gitwise contributors"]
-repository = "https://github.com/OWNER/gitwise"
+repository = "https://github.com/SteelWaffe/gitwise"
 
 [workspace.dependencies]
 gitwise-core = { path = "crates/gitwise-core" }
