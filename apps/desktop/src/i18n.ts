@@ -191,6 +191,9 @@ const tr = {
   "error.generic": "Bir şeyler ters gitti",
   "error.kind.auth": "Hesap doğrulanamadı",
   "error.kind.auth.body": "Bu hesap repoya erişemedi. Token'ın süresi dolmuş olabilir ya da hesabın bu repoya yetkisi yok. Doğru profil seçili mi?",
+  "error.kind.token_permissions": "Token'ın bu repo için izni eksik",
+  "error.kind.token_permissions.body":
+    "Hesap doğru ama token koda erişemiyor. GitHub'da token'ı düzenle: Repository permissions altında \"Contents\" iznini \"Read and write\" yap (workflow dosyaları için \"Workflows\" iznini de). Token değişmez, Gitwise'ta bir şey yapman gerekmez.",
   "error.kind.repo_not_found": "Repo bulunamadı",
   "error.kind.repo_not_found.body": "Adres yanlış olabilir ya da seçili hesap bu repoyu göremiyor (özel repolar yalnızca yetkili hesaplara görünür).",
   "error.kind.push_behind": "Uzakta yeni commit'ler var",
@@ -272,6 +275,8 @@ const tr = {
   "editor.token": "Erişim token'ı",
   "editor.token.keep": "Kayıtlı token korunur. Değiştirmek için yenisini yapıştır.",
   "editor.token.create": "Yeni token oluştur",
+  "editor.token.permissions":
+    "Fine-grained token kullanırsan şu izinleri ver: Contents → Read and write, Workflows → Read and write, Metadata → Read. Classic token'da \"repo\" ve \"workflow\" yeterli.",
   "editor.username": "Kullanıcı adı",
   "editor.verify": "Doğrula",
   "editor.verified": "{login} olarak doğrulandı",
@@ -611,6 +616,9 @@ const en: Dict = {
   "error.generic": "Something went wrong",
   "error.kind.auth": "Could not authenticate",
   "error.kind.auth.body": "This account could not access the repository. The token may have expired or the account lacks access. Is the right profile selected?",
+  "error.kind.token_permissions": "The token lacks permission for this repository",
+  "error.kind.token_permissions.body":
+    "The account is right, but the token cannot access code. Edit the token on GitHub: under Repository permissions set \"Contents\" to \"Read and write\" (and \"Workflows\" for workflow files). The token itself stays the same; nothing to change in Gitwise.",
   "error.kind.repo_not_found": "Repository not found",
   "error.kind.repo_not_found.body": "The address may be wrong, or the selected account cannot see this repository (private repositories only show up for accounts with access).",
   "error.kind.push_behind": "The remote has new commits",
@@ -692,6 +700,8 @@ const en: Dict = {
   "editor.token": "Access token",
   "editor.token.keep": "The saved token is kept. Paste a new one to replace it.",
   "editor.token.create": "Create a token",
+  "editor.token.permissions":
+    "For a fine-grained token grant: Contents → Read and write, Workflows → Read and write, Metadata → Read. A classic token needs \"repo\" and \"workflow\".",
   "editor.username": "User name",
   "editor.verify": "Verify",
   "editor.verified": "Verified as {login}",

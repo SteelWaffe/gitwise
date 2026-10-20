@@ -499,6 +499,14 @@ pub fn classify_failure(stderr: &str) -> Option<&'static str> {
     if has("gh001: large files detected") || has("exceeds github's file size limit") || has("this exceeds") && has("file size limit") {
         return Some("file_too_large");
     }
+    // Fine-grained GitHub tokens without the Contents permission: the account is fine, the
+    // token just may not touch code. GitHub says "write access" even for a pull.
+    if has("write access to repository not granted")
+        || has("resource not accessible by personal access token")
+        || has("resource not accessible by integration")
+    {
+        return Some("token_permissions");
+    }
     if has("authentication failed")
         || has("could not read username")
         || has("could not read password")
@@ -609,6 +617,10 @@ mod tests {
         );
         assert_eq!(classify_failure("remote: error: GH001: Large files detected."), Some("file_too_large"));
         assert_eq!(classify_failure("CONFLICT (content): Merge conflict in a.txt"), Some("conflict"));
+        assert_eq!(
+            classify_failure("remote: Write access to repository not granted.\nfatal: unable to access 'https://github.com/a/b.git/': The requested URL returned error: 403"),
+            Some("token_permissions")
+        );
         assert_eq!(classify_failure("something else"), None);
     }
 

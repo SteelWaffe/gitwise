@@ -330,6 +330,7 @@ export function ProfileEditor() {
               {t("editor.verify")}
             </button>
           </div>
+          {isGithub && <div className="hint">{t("editor.token.permissions")}</div>}
           <div className="row hint">
             {p.hasToken && !clearToken && !token && <span>{t("editor.token.keep")}</span>}
             <span className="spacer" />
