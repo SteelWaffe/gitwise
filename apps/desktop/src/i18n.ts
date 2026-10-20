@@ -275,6 +275,24 @@ const tr = {
   "editor.token": "Erişim token'ı",
   "editor.token.keep": "Kayıtlı token korunur. Değiştirmek için yenisini yapıştır.",
   "editor.token.create": "Yeni token oluştur",
+  "guide.title": "Token nasıl oluşturulur?",
+  "guide.openFine": "Fine-grained token sayfasını aç",
+  "guide.openClassic": "Classic token sayfasını aç",
+  "guide.openPage": "Token sayfasını aç",
+  "guide.github.fine":
+    "Aşağıdaki \"Fine-grained token sayfasını aç\" butonuna bas.\nToken name: Gitwise. Expiration: istediğin süre.\nResource owner: kendi hesabın. Şirket reposu içinse şirketin organizasyonunu seç; organizasyon yöneticisinin onayı gerekebilir.\nRepository access: \"All repositories\" (ya da sadece çalışacağın repolar).\nPermissions > Repositories > \"Add permissions\": Contents → Read and write, Workflows → Read and write. Metadata kendiliğinden Read olur.\n\"Generate token\"a bas, github_pat_ ile başlayan değeri kopyala.\nBuraya yapıştır ve \"Doğrula\"ya bas.",
+  "guide.github.classic":
+    "Daha basit yol: classic token. Butona basınca gereken izinler (repo, workflow, read:org, user:email) seçili gelir; süreyi seçip \"Generate token\"a bas, ghp_ ile başlayan değeri buraya yapıştır.",
+  "guide.github.sso":
+    "Şirket organizasyonu SSO kullanıyorsa: classic token'ı oluşturduktan sonra token listesinde \"Configure SSO\" > organizasyon > \"Authorize\" yap, yoksa şirket repolarında 403 alırsın.",
+  "guide.gitlab":
+    "Aşağıdaki butona bas; ad (Gitwise) ve izinler (api, read_user, write_repository) hazır gelir.\nBitiş tarihini seç.\n\"Create personal access token\"a bas, glpat- ile başlayan değeri kopyala.\nBuraya yapıştır ve \"Doğrula\"ya bas.",
+  "guide.bitbucket":
+    "Aşağıdaki butonla Bitbucket'ta yeni bir app password / API token sayfasını aç.\nİzinler: Repositories → Read ve Write (gerekiyorsa Pull requests → Read).\nOluşturup değeri kopyala.\nYukarıdaki \"Kullanıcı adı\" alanına Bitbucket kullanıcı adını, token alanına bu değeri yaz.",
+  "guide.azure":
+    "Aşağıdaki butonla Azure DevOps'ta \"Personal access tokens\" sayfasını aç, \"New Token\"a bas.\nOrganization: çalışacağın organizasyon. Scopes: Code → Read & write.\n\"Create\"e bas, değeri kopyala.\nKullanıcı adı alanına herhangi bir şey (ör. e-postan), token alanına bu değeri yaz.",
+  "guide.generic":
+    "Git sunucunun hesap ayarlarından bir erişim token'ı ya da uygulama parolası oluştur; repo okuma ve yazma izni ver.\nKullanıcı adını ve token'ı yukarıya yaz.",
   "editor.token.permissions":
     "Fine-grained token kullanırsan şu izinleri ver: Contents → Read and write, Workflows → Read and write, Metadata → Read. Classic token'da \"repo\" ve \"workflow\" yeterli.",
   "editor.username": "Kullanıcı adı",
@@ -700,6 +718,24 @@ const en: Dict = {
   "editor.token": "Access token",
   "editor.token.keep": "The saved token is kept. Paste a new one to replace it.",
   "editor.token.create": "Create a token",
+  "guide.title": "How do I create a token?",
+  "guide.openFine": "Open the fine-grained token page",
+  "guide.openClassic": "Open the classic token page",
+  "guide.openPage": "Open the token page",
+  "guide.github.fine":
+    "Press \"Open the fine-grained token page\" below.\nToken name: Gitwise. Expiration: as long as you like.\nResource owner: your account. For company repositories pick the company organization; an org admin may need to approve.\nRepository access: \"All repositories\" (or only the ones you work on).\nPermissions > Repositories > \"Add permissions\": Contents → Read and write, Workflows → Read and write. Metadata becomes Read automatically.\nPress \"Generate token\" and copy the value starting with github_pat_.\nPaste it here and press \"Verify\".",
+  "guide.github.classic":
+    "Simpler: a classic token. The button opens the page with the needed scopes (repo, workflow, read:org, user:email) ticked; pick an expiry, press \"Generate token\" and paste the ghp_ value here.",
+  "guide.github.sso":
+    "If the company organization uses SSO: after creating a classic token, choose \"Configure SSO\" > the organization > \"Authorize\" in the token list, or company repositories answer 403.",
+  "guide.gitlab":
+    "Press the button below; the name (Gitwise) and scopes (api, read_user, write_repository) are filled in.\nPick an expiry date.\nPress \"Create personal access token\" and copy the glpat- value.\nPaste it here and press \"Verify\".",
+  "guide.bitbucket":
+    "Open Bitbucket's new app password / API token page with the button below.\nPermissions: Repositories → Read and Write (Pull requests → Read if needed).\nCreate it and copy the value.\nPut your Bitbucket user name in \"User name\" above and the value in the token field.",
+  "guide.azure":
+    "Open Azure DevOps \"Personal access tokens\" with the button below and press \"New Token\".\nOrganization: the one you work in. Scopes: Code → Read & write.\nPress \"Create\" and copy the value.\nPut anything (e.g. your email) as the user name and the value in the token field.",
+  "guide.generic":
+    "Create an access token or app password in your git server's account settings with read and write access to repositories.\nEnter the user name and the token above.",
   "editor.token.permissions":
     "For a fine-grained token grant: Contents → Read and write, Workflows → Read and write, Metadata → Read. A classic token needs \"repo\" and \"workflow\".",
   "editor.username": "User name",

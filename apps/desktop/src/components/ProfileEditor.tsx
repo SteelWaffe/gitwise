@@ -52,6 +52,55 @@ function tokenPage(p: Profile): string | null {
   }
 }
 
+/** Step-by-step token creation for the selected service, with buttons to the right pages. */
+function TokenGuide({ profile: p }: { profile: Profile }) {
+  const t = useT();
+  const isGithub = p.provider === "github" || p.provider === "githubEnterprise";
+  const steps = (key: Parameters<typeof t>[0]) => (
+    <ol>
+      {t(key)
+        .split("\n")
+        .map((s, i) => (
+          <li key={i}>{s}</li>
+        ))}
+    </ol>
+  );
+  const page = tokenPage(p);
+  return (
+    <details className="guide" open={!p.hasToken}>
+      <summary>{t("guide.title")}</summary>
+      {isGithub ? (
+        <>
+          {steps("guide.github.fine")}
+          <div className="row wrap">
+            <button className="btn sm primary" disabled={!p.host} onClick={() => openUrl(`https://${p.host}/settings/personal-access-tokens/new`)}>
+              <ExternalLink size={12} /> {t("guide.openFine")}
+            </button>
+            {page && (
+              <button className="btn sm" onClick={() => openUrl(page)}>
+                <ExternalLink size={12} /> {t("guide.openClassic")}
+              </button>
+            )}
+          </div>
+          <p className="hint">{t("guide.github.classic")}</p>
+          <p className="hint">{t("guide.github.sso")}</p>
+        </>
+      ) : (
+        <>
+          {steps(
+            p.provider === "gitlab" ? "guide.gitlab" : p.provider === "bitbucket" ? "guide.bitbucket" : p.provider === "azureDevops" ? "guide.azure" : "guide.generic",
+          )}
+          {page && (
+            <button className="btn sm primary" onClick={() => openUrl(page)}>
+              <ExternalLink size={12} /> {t("guide.openPage")}
+            </button>
+          )}
+        </>
+      )}
+    </details>
+  );
+}
+
 export function ProfileEditor() {
   const t = useT();
   const editor = useApp((s) => s.profileEditor);
@@ -330,7 +379,6 @@ export function ProfileEditor() {
               {t("editor.verify")}
             </button>
           </div>
-          {isGithub && <div className="hint">{t("editor.token.permissions")}</div>}
           <div className="row hint">
             {p.hasToken && !clearToken && !token && <span>{t("editor.token.keep")}</span>}
             <span className="spacer" />
@@ -346,6 +394,7 @@ export function ProfileEditor() {
             )}
           </div>
         </div>
+        <TokenGuide profile={{ ...p, host }} />
       </div>
 
       <div className="subsection">
